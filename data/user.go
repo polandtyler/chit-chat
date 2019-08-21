@@ -1,7 +1,6 @@
 package data
 
 import (
-	"fmt"
 	"time"
 )
 
@@ -33,8 +32,21 @@ func (user *User) Session() (session Session, err error) {
 	return
 }
 
+func (user *User) Create() (err error) {
+	statement := "INSERT into users (uuid, name, email, password, created_at) values ($1, $2, $3, $4, $5) returning id, uuid, created_at"
+	stmt, err := Db.Prepare(statement)
+	if err != nil {
+		return
+	}
+	defer stmt.Close()
+
+	err = stmt.QueryRow(createUUID(), user.Name, user.Email, Encrypt(user.Password), time.Now()).
+		Scan(&user.Id, &user.Uuid, &user.CreatedAt)
+	return
+}
+
 func (user *User) Delete() (error error) {
-	statement := "delete from users where id = $1"
+	statement := "DELETE FROM users WHERE id = $1"
 	stmt, err := Db.Prepare(statement)
 	if err != nil {
 		return
@@ -46,7 +58,7 @@ func (user *User) Delete() (error error) {
 }
 
 func (user *User) Update() (err error) {
-	statement := "update users set name = $2, email = $3 where id = $1"
+	statement := "UPDATE users SET name = $2, email = $3 WHERE id = $1"
 	stmt, err := Db.Prepare(statement)
 	if err != nil {
 		return
@@ -59,7 +71,7 @@ func (user *User) Update() (err error) {
 
 func UserDeleteAll() (err error) {
 	statement := "delete FROM users"
-	_, err := Db.Exec(statement)
+	_, err = Db.Exec(statement)
 	return
 }
 

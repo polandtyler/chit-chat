@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/polandtyler/chit_chat/data"
 	"html/template"
 	"net/http"
 )

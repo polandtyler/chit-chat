@@ -3,12 +3,11 @@ package main
 import (
 	"github.com/polandtyler/chit_chat/data"
 	"net/http"
-	"time"
 )
 
-func login(w http.ResponseWriter, r *http.Request) {
+func login(writer http.ResponseWriter, request *http.Request) {
 	t := parseTemplateFiles("login.layout", "public.navbar", "login")
-	t.Execute(w, nil)
+	t.Execute(writer, nil)
 }
 
 func signup(writer http.ResponseWriter, request *http.Request) {
