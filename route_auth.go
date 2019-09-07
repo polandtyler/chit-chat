@@ -30,3 +30,40 @@ func signupAccount(writer http.ResponseWriter, request *http.Request) {
 	}
 	http.Redirect(writer, request, "/login", 302)
 }
+
+// POST authenticate
+// Authenticate the user given the email and password
+func authenticate(writer http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	user, err := data.UserByEmail(r.PostFormValue("email"))
+	if err != nil {
+		danger(err, "Cannot find user")
+	}
+	if user.Password == data.Encrypt(r.PostFormValue("password")) {
+		session, err := user.CreateSession()
+		if err != nil {
+			danger(err, "Cannot create session")
+		}
+		cookie := http.Cookie{
+			Name:       "_cookie",
+			Value:      session.Uuid,
+			HttpOnly:   true,
+		}
+		http.SetCookie(writer, &cookie)
+		http.Redirect(writer, r, "/", 302)
+	} else {
+		http.Redirect(writer, r, "/login", 302)
+	}
+}
+
+// GET /logout
+// Logs the user out
+func logout(writer http.ResponseWriter, request *http.Request) {
+	cookie, err := request.Cookie("_cookie")
+	if err != http.ErrNoCookie {
+		warning(err, "Failed to get cookie")
+		session := data.Session{Uuid: cookie.Value}
+		session.DeleteByUUID()
+	}
+	http.Redirect(writer, request, "/", 302)
+}

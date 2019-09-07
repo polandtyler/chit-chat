@@ -16,6 +16,7 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Print(Db)
 	return
 }
 

@@ -38,6 +38,11 @@ func danger(args ...interface{}) {
 	logger.Println(args...)
 }
 
+func warning(args ...interface{}) {
+	logger.SetPrefix("ERROR ")
+	log.Println(args)
+}
+
 func parseTemplateFiles(filenames ...string) (t *template.Template) {
 	var files []string
 	t = template.New("layout")

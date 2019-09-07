@@ -1,9 +1,6 @@
 package main
 
-import (
-	"html/template"
-	"net/http"
-)
+import "net/http"
 
 func main() {
 	mux := http.NewServeMux()
