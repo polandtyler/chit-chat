@@ -2,3 +2,5 @@
 *.log
 chitchat
 *.idea*
+/.idea/dictionaries/tylerpoland.xml
+/.idea/workspace.xml
