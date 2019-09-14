@@ -8,7 +8,6 @@ import (
 func err(writer http.ResponseWriter, request *http.Request) {
 	vals := request.URL.Query()
 	_, err := session(writer, request)
-
 	if err != nil {
 		generateHTML(writer, vals.Get("msg"), "layout", "public.navbar", "error")
 	} else {
@@ -16,25 +15,16 @@ func err(writer http.ResponseWriter, request *http.Request) {
 	}
 }
 
-func index(w http.ResponseWriter, r *http.Request) {
-	//files := []string{
-	//	"templates/layout.html",
-	//	"templates/navbar.html",
-	//	"templates/index.html",
-	//}
-	//
-	//templates := template.Must(template.ParseFiles(files...))
-	//threads, err := data.Threads()
-	//if err == nil {
-	//	templates.ExecuteTemplate(w, "layout", threads)
-	//}
+func index(writer http.ResponseWriter, request *http.Request) {
 	threads, err := data.Threads()
-	if err == nil {
-		_, err := session(w, r)
+	if err != nil {
+		errorMessage(writer, request, "Cannot get threads")
+	} else {
+		_, err := session(writer, request)
 		if err != nil {
-			generateHTML(w, threads, "layout", "public_navbar", "index")
+			generateHTML(writer, threads, "layout", "public.navbar", "index")
 		} else {
-			generateHTML(w, threads, "layout", "private_navbar", "index")
+			generateHTML(writer, threads, "layout", "private.navbar", "index")
 		}
 	}
 }
